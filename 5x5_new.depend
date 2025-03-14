@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1717761733 source:/home/jeremy/code/5x5_new/expandSubgroups neglength.nasm
+
+1717502781 source:/home/jeremy/code/5x5_new/hashWords_phf_cfd.nasm
+
+1718129050 source:/home/jeremy/code/5x5_new/linearSearch splitHistory.nasm
+
+1718125315 source:/home/jeremy/code/5x5_new/newreport.c
+	<x86intrin.h>
+	<stdio.h>
+	<stdint.h>
+
+1717770854 source:/home/jeremy/code/5x5_new/sortPop2-Lpop.nasm
+
+1717489012 source:/home/jeremy/code/5x5_new/5x5 convert cullduplicates.nasm
+
+1718103595 source:/home/jeremy/code/5x5_new/5x5 countRankConvert v4.nasm
+
+1717584546 source:/home/jeremy/code/5x5_new/5x5 find5words new.nasm
+
+1718128768 source:/home/jeremy/code/5x5_new/newfind5x5words.c
+	<stdint.h>
+	<fcntl.h>
+	<stdio.h>
+	<sys/mman.h>
+	<stdlib.h>
+	<sys/stat.h>
+	<unistd.h>
+	<time.h>
+
+1717869141 source:/home/jeremy/code/5x5_new/5x5 expandsubgroups newer.nasm
+
+1718040842 source:/home/jeremy/code/5x5_new/5x5 expandsubgroups newerer.nasm
+
