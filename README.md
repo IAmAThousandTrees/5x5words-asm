@@ -1,5 +1,5 @@
 # 5x5words-asm
-An avx512 implementation of the "find 5 5-letter words with all different letters" puzzle
+An avx512 implementation of the "find 5 5-letter words with all different letters" puzzle. I upload purely for educational reading, and make no guarantee that it still works as it has been a while since I was working on it actively, as I may have left a change half-done somewhere, and I have made untested changes in the last few hours before uploading too, that may or may not have fixed the bug noted below.
 
 These files are a code::blocks project for the 5x5words challenge largely made in nasm assembly, but to build it correctly code::blocks requires some considerable setup to know what to do with nasm files, so I'll breifly explain how to build without an IDE (see Build).
 
@@ -14,7 +14,7 @@ nasm -p nasm_defaults.inc file.nasm
 On each of the nasm files. this should produce file.o as a PIE elf64.
 (the nasm_defaults.inc sets up some macros that let me type {k1z} instead of {k1}{z} for avx512 zeroing-mask predicates, and default the data references to PC-relative addressing for relocatable code.)
 
-then build the c main() file with gcc and link the nasm generated object files.
+Then build the c main() file with gcc and link the nasm generated object files.
 
 # Run
 When run in a terminal it expects to find the words_alpha.txt file in the execution directory.
