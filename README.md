@@ -14,7 +14,9 @@ nasm -p nasm_defaults.inc file.nasm
 On each of the nasm files. this should produce file.o as a PIE elf64.
 (the nasm_defaults.inc sets up some macros that let me type {k1z} instead of {k1}{z} for avx512 zeroing-mask predicates, and default the data references to PC-relative addressing for relocatable code.)
 
-Then build the c main() file with gcc and link the nasm generated object files.
+Build newreport.c with gcc or clang, also to .o file
+
+Then build the c main file (newfind5x5word.c) with gcc or clang and link the nasm generated object files.
 
 # Run
 When run in a terminal it expects to find the words_alpha.txt file in the execution directory.
@@ -27,3 +29,12 @@ There are still some flaws in the code: apart from a couple of sub-optimal memor
 When looking through the code you'll often find notes that simply say something like zmm13=... with some hex after it. this was a note to myself on a constant to be loaded into the register at the eginning of the function. The one thing that my not be obvious is that at the end there will e something like (w)(r2l) or (dw)(l2r). w (word) and dw (dword) should be self explanititory but r2l or l2r refer to the memory byte order. it is normal to only list data elements left to right since that is the direction our language flows across the page. But our numbers flow right to left, since the Arabic numerals our math is based on, like the Arabic language they came from, flows right to left. In many cases, especially where different element sizes are mixed in a series of operations I find it it much simpler to work with everything flowing right-to-left so that the order of digits remains the same whether they are to be interpreted as 64 bytes, 32 words, 16 dwords or 8 qwords.
 
 In addition to the extensive line by line notes in the executable code there's also a few other notes files including a pseudocode version of the algorithm where I was trying to imagine how a high-level language might represent the processes written in assembly as a more general set of bulk data handling data types and functions. I guess it's kinda C++-like in its way of doing things but C++ is one language I can say for certain cannot stretch to handle it. Maybe rust's metaprogramming would make it possible to handle all the different methods data types and cases in the most appropriate way, but I wouldn't be confident of anything short of a fully new language designed around making this kind of thing more accessible being able to handle it optimally.
+
+# code::blocks setup
+code::blocks needs 2 main settings changes to be able to edit and build the project:
+
+first is in the compile menu -> other settings tab -> advanced button    then add a new entry for compiling .nasm files with nasm.
+
+the second is to update and add an entry for a lexer to read nasm assembly with avx512 instructions and registers (the supplied assembly lexers only include up to SSE2 instructions and registers). I've included my custom lexer definition here as 
+
+
