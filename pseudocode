@@ -1,0 +1,50 @@
+/* pseudocode of the asm 5x5words */
+inline Vu32 hashfunc(Vu32 code)
+{
+	static Vu16 lookup1 = {....}; // lookups are 1 of 32 but only need 16 bits
+	static Vu16 lookup2 = {....};
+	static Vu16 lookup3 = {....};
+	static Vu16 lookup4 = {....};
+	static Vu16 lookup5 = {....};
+	Vu32 temp;
+	Vu32 result = lookup1.lookupAsVu32(temp = code.lzcnt()); code &= 0x7fffffff >> temp;
+	result += lookup2.lookupAsVu32(temp = code.lzcnt()); code &= 0x7fffffff >> temp;
+	result += lookup3.lookupAsVu32(temp = code.lzcnt()); code &= 0x7fffffff >> temp;
+	result += lookup4.lookupAsVu32(temp = code.lzcnt()); code &= 0x7fffffff >> temp;
+	result += lookup5.lookupAsVu32(temp = code.lzcnt()); code &= 0x7fffffff >> temp;
+	return result;
+}
+
+auto file = mmapfile(filename).asVuChar();
+auto words = file.mapVbool(auto c: => ((c & ~32) - 'A') >= 26).mapBitPatern(0b1000001).sparsify().indexBitsInt().gather(int i: => *(qword *)(file.data + i))
+auto codes = words.linkedParallelMap(auto w: => (int)((1 << (w & 0xff)) | (1 << ((w >> 8) & 0xff)) | (1 << ((w >> 8) & 0xff)) | (1 << ((w >> 8) & 0xff)) | (1 << ((w >> 8) & 0xff)))).filter(auto c: => popcnt(c) == 5)
+vHashmap hashmap;
+codes = codes.bulkHashFilterDuplicates(auto w,c: => hashfunc(c), &hashmap).linkedSets[1];
+
+Vu16 rank = (codes = codes.bmtdw()).accumulate(auto a, c: => a + c.popcnt()).Vrank()
+Vu16 rlup = rank.revLookup();
+codes = codes.map(auto c => c.lookup(rlup).bmtwd);
+
+codes.OrderBy4(auto c: => (Vu32){3,2,0,1}.lookup((c >> 6) & 3));
+codes.OrderBy32(auto c: => c.lzcnt());	// orderBy keeps references to the sections, and if there's already sections it keeps references to the subsections
+
+auto partialresult = codes.toGroupedCombinationSearch(auto a: => (Vu32,Vu32)((~c).lzcnt(), (c>>6) & 3, c)).addAltSearchKeyFunction(auto c: => c | 0x80000000 >> c.lzcnt()); 
+auto selection = partialresult.resultselectiontype();
+partialresult.increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.resetRead().addMap(auto c: => c | 0x20 | (0x80000000 >> c.lzcnt())).selectTo(selection, auto a: => a.lzcnt() > 25).increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.selectTo(selection, auto a: => a.lzcnt() > 25).increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.selectTo(selection, auto a: => a.lzcnt() > 25).increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+partialresult.selectTo(selection, auto a: => a.lzcnt() > 25).increment(auto a,c: => !(a&c), auto a,c: =>(a|c));
+
+auto item = selection.iterate()
+while(item.next()) {
+	printf("{%s}{%s}{%s}{%s}{%s}\n", hashmap.findall(reorderBits(item.iterateHistory(), rank))
+									, hashmap.findall(reorderBits(item.iterateHistory(), rank))
+									, hashmap.findall(reorderBits(item.iterateHistory(), rank))
+									, hashmap.findall(reorderBits(item.iterateHistory(), rank))
+									, hashmap.findall(reorderBits(item.iterateHistory(), rank)));
+			}
+
