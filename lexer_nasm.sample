@@ -1,0 +1,29 @@
+; lexer_nasm.sample code
+
+global function
+
+%ifnmacro domath
+%macro	domath	3
+	vpaddd	%1, %2, %3
+%endmacro
+%endif
+
+section .data
+
+align	16
+
+data:	dd	16 dup (1,2,3,4)
+
+section .text
+
+function:
+	mov		zmm0, [data]
+	lea		rdi, [rdi + rsi]
+	neg		rsi
+.loop:
+	domath	zmm0, zmm0, zmm0
+	vmovdqa	[rdi + rsi * 4], zmm0
+	add		rsi, 16
+	js		loop
+
+	ret
