@@ -33,8 +33,14 @@ In addition to the extensive line by line notes in the executable code there's a
 # code::blocks setup
 code::blocks needs 2 main settings changes to be able to edit and build the project:
 
-first is in the compile menu -> other settings tab -> advanced button    then add a new entry for compiling .nasm files with nasm.
+first is in the settings menu -> compile... -> other settings tab -> advanced options button.    Declair that you really know what you are doing, then add a new source file entry for .nasm files and paste a macro for compiling with nasm. I use:
 
-the second is to update and add an entry for a lexer to read nasm assembly with avx512 instructions and registers (the supplied assembly lexers only include up to SSE2 instructions and registers). I've included my custom lexer definition here as 
+nasm $file -felf64 -o $object -p ~/path/to/nasm_defaults.inc -g
+
+
+
+the second is to update and add an entry for a lexer to read nasm assembly with avx512 instructions and registers (the supplied assembly lexers only include up to SSE2 instructions and registers). I've included my custom lexer definition here as lexer_nasm.xml, and lexer_nasm.sample. Installing is as simple as copying to the correct directory in the code::blocks installation, but if, like me, you installed with flatpak it might be tricky to find. mine is at:
+
+'/var/lib/flatpak/app/org.codeblocks.codeblocks/x86_64/stable/9149915c0623727962f7ea992dd690e5c0b9908f65f1e6fd9d5e0befdfa0a0ce/files/share/codeblocks/lexers'
 
 
